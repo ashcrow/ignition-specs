@@ -1,0 +1,31 @@
+From 516a5e7a5256126ed2efab114fc32f3dfb383611 Mon Sep 17 00:00:00 2001
+From: Steve Milner <smilner@redhat.com>
+Date: Thu, 15 Mar 2018 09:06:45 -0400
+Subject: [PATCH 2/2] build_releases: Allow setting VERSION and fallback to git
+
+---
+ build_releases | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/build_releases b/build_releases
+index 14b6ac6..9a43369 100755
+--- a/build_releases
++++ b/build_releases
+@@ -5,8 +5,13 @@ set -eu
+ NAME="ignition"
+ ORG_PATH="github.com/coreos"
+ REPO_PATH="${ORG_PATH}/${NAME}"
+-VERSION=$(git describe --dirty)
+ GLDFLAGS=${GLDFLAGS:-}
++
++if [ -z ${VERSION+a} ]; then
++	echo "Using version from git..."
++	VERSION=$(git describe --dirty)
++fi
++
+ GLDFLAGS+="-X github.com/coreos/ignition/internal/version.Raw=${VERSION}"
+ 
+ if [[ -n "$(git status -s)" ]]; then
+-- 
+2.14.3
+

@@ -1,0 +1,36 @@
+From b2a5dddb27e7264e2e684aee8eaec07aed3996c5 Mon Sep 17 00:00:00 2001
+From: Steve Milner <smilner@redhat.com>
+Date: Thu, 15 Mar 2018 09:26:25 -0400
+Subject: [PATCH 2/3] build_releases: Override artifact output with BIN_PATH
+
+---
+ build_releases | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/build_releases b/build_releases
+index 14b6ac6..7478cd7 100755
+--- a/build_releases
++++ b/build_releases
+@@ -21,14 +21,17 @@ fi
+ 
+ eval $(go env)
+ 
+-export GOBIN=${PWD}/bin/releases
++if [ -z ${BIN_PATH+a} ]; then
++	export BIN_PATH=${PWD}/bin/releases/
++fi
++
+ export GOPATH=${PWD}/gopath
+ export CGO_ENABLED=0
+ 
+ build_release() {
+     export NAME="ignition-validate-${1}"
+     echo "building ${NAME}"
+-    go build -ldflags "${GLDFLAGS}" -o ${GOBIN}/${NAME} ${REPO_PATH}/validate
++    go build -ldflags "${GLDFLAGS}" -o ${BIN_PATH}/${NAME} ${REPO_PATH}/validate
+ }
+ 
+ export GOOS=linux
+-- 
+2.14.3
+
