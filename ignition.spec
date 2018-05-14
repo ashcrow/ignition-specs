@@ -2,10 +2,10 @@
 
 Name:           ignition
 Version:        0.23.0
-Release:        0.2%{?dist}
+Release:        0.4%{?dist}
 Summary:        First boot installer and configuration tool
 
-License:        ASLv2
+License:        ASL 2.0
 URL:            https://github.com/coreos/ignition 
 Source0:        https://github.com/coreos/%{name}/archive/v%{version}.tar.gz
 
@@ -14,9 +14,14 @@ Patch1: 0002-build_releases-Override-artifact-output-with-BIN_PAT.patch
 Patch2: 0001-build-Allow-VERSION-set-and-fallback-to-git.patch
 Patch3: 0002-build_releases-Allow-setting-VERSION-and-fallback-to.patch
 
+%if 0%{?fedora}
+BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang >= 1.6.2}
+%endif #fedora
+%if 0%{?centos}
 BuildRequires:  golang
-BuildRequires:  go-compilers-golang-compiler
+%endif #centos
 BuildRequires:  libblkid-devel
+ExclusiveArch:  %{go_arches}
 
 %description
 Ignition is the utility used by CoreOS Container Linux to manipulate
@@ -50,9 +55,14 @@ install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu May 10 2018 Steve Milner <smilner@redhat.com> - 0.23.0-0.4
+- Update per review
+
+* Mon Mar 26 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.3
+- fixup spec so epel7 will build
+
 * Tue Mar 20 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.2
 - fixups for spec file
 
 * Thu Mar 15 2018 Steve Milner <smilner@redhat.com> - 0.23.0-0.1
 - Initial spec
-- 
