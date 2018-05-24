@@ -21,7 +21,8 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang >= 1
 BuildRequires:  golang
 %endif #centos
 BuildRequires:  libblkid-devel
-ExclusiveArch:  %{go_arches}
+# See https://github.com/openshift/os/issues/59
+#ExclusiveArch:  %{go_arches}
 
 %description
 Ignition is the utility used by CoreOS Container Linux to manipulate
