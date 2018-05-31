@@ -2,7 +2,7 @@
 
 Name:           ignition
 Version:        0.23.0
-Release:        0.4%{?dist}
+Release:        0.5%{?dist}
 Summary:        First boot installer and configuration tool
 
 License:        ASL 2.0
@@ -36,7 +36,11 @@ configuration.
 %build
 # TODO: Using ./build_releases will output multiple archs. This could be used
 #       to do multiple arch outputs in subpackages.
-VERSION=%{version} BIN_PATH=./ ./build
+export VERSION=%{version}
+# Tell ignition where to find chroot binary
+export GLDFLAGS='-X github.com/coreos/ignition/internal/distro.chrootCmd=%{_sbindir}/chroot '
+export BIN_PATH=./
+./build
 
 %install
 install -d -p %{buildroot}%{_bindir}
@@ -51,6 +55,9 @@ install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 
 
 %changelog
+* Thu May 31 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.5
+- Tell ignition where to find chroot binary
+
 * Thu May 10 2018 Steve Milner <smilner@redhat.com> - 0.23.0-0.4
 - Update per review
 
