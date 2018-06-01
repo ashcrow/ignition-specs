@@ -1,13 +1,15 @@
 %define debug_package %{nil}
+%define dracutlibdir %{_prefix}/lib/dracut
 
 Name:           ignition
 Version:        0.23.0
-Release:        0.5%{?dist}
+Release:        0.6%{?dist}
 Summary:        First boot installer and configuration tool
 
 License:        ASL 2.0
 URL:            https://github.com/coreos/ignition 
 Source0:        https://github.com/coreos/%{name}/archive/v%{version}.tar.gz
+Source1:        https://github.com/dustymabe/bootengine/archive/master.tar.gz
 
 Patch0: 0001-build-Override-artifact-output-with-BIN_PATH.patch
 Patch1: 0002-build_releases-Override-artifact-output-with-BIN_PAT.patch
@@ -30,7 +32,10 @@ configuration.
 
 
 %prep
+# unpack source0 and apply patches
 %autosetup -n %{name}-%{version}
+# unpack source1 (dracut modules)
+%setup -T -D -a 1 -n %{name}-%{version}
 
 
 %build
@@ -43,9 +48,15 @@ export BIN_PATH=./
 ./build
 
 %install
+# ignition
 install -d -p %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition %{buildroot}%{_bindir}
 install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
+# dracut modules
+install -d -p %{buildroot}/%{dracutlibdir}/modules.d
+rm ./bootengine-master/dracut/README.txt
+cp -r ./bootengine-master/dracut/* %{buildroot}/%{dracutlibdir}/modules.d/
+
 
 %files
 %license LICENSE
@@ -53,8 +64,26 @@ install -p -m 0755 ./ignition-validate %{buildroot}%{_bindir}
 %{_bindir}/%{name}
 %{_bindir}/%{name}-validate
 
+%package dracut
+
+Summary: The ignition dracut modules
+Requires: ignition
+Requires: dracut
+Requires: dracut-network
+
+%description dracut
+Dracut modules for ignition to enable ignition services to run in the
+initramfs on boot.
+
+%files dracut
+%defattr(-,root,root,0755)
+%{dracutlibdir}/modules.d/30ignition
+%{dracutlibdir}/modules.d/10usr-generator
 
 %changelog
+* Fri Jun 01 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.6
+- Add ignition-dracut subpackage
+
 * Thu May 31 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.5
 - Tell ignition where to find chroot binary
 
