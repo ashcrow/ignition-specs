@@ -3,7 +3,7 @@
 
 Name:           ignition
 Version:        0.23.0
-Release:        0.6%{?dist}
+Release:        0.7%{?dist}
 Summary:        First boot installer and configuration tool
 
 License:        ASL 2.0
@@ -78,9 +78,13 @@ initramfs on boot.
 %files dracut
 %defattr(-,root,root,0755)
 %{dracutlibdir}/modules.d/30ignition
-%{dracutlibdir}/modules.d/10usr-generator
+%{dracutlibdir}/modules.d/99journald-conf
 
 %changelog
+* Mon Jun 04 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.7
+- dracut: usr-generator module was removed upstream
+- dracut: journald-conf was added upstream
+
 * Fri Jun 01 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.6
 - Add ignition-dracut subpackage
 
