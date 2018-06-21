@@ -3,7 +3,7 @@
 
 Name:           ignition
 Version:        0.23.0
-Release:        0.7%{?dist}
+Release:        0.11%{?dist}
 Summary:        First boot installer and configuration tool
 
 License:        ASL 2.0
@@ -81,6 +81,20 @@ initramfs on boot.
 %{dracutlibdir}/modules.d/99journald-conf
 
 %changelog
+* Mon Jun 18 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.11
+- dracut: work on non ostree systems
+- dracut: remove auto detection for oem for now
+
+* Thu Jun 07 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.10
+- dracut: detect openstack oem
+
+* Thu Jun 07 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.9
+- dracut: add in helper unit for mounting /var/
+
+* Thu Jun 07 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.8
+- dracut: add in support for ostree based systems on bootup
+- dracut: drop ignition-disks from running (for now)
+
 * Mon Jun 04 2018 Dusty Mabe <dusty@dustymabe.com> - 0.23.0-0.7
 - dracut: usr-generator module was removed upstream
 - dracut: journald-conf was added upstream
